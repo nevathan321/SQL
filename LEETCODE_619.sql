@@ -1,4 +1,9 @@
-SELECT MAX(num) AS num
-FROM MyNumbers
-GROUP BY num
-HAVING COUNT(*) = 1
+Select 
+  Max(num) As num 
+From (
+    Select 
+      num 
+    From MyNumbers
+    Group by num 
+    Having count(*) = 1 
+) as Tableuse       
