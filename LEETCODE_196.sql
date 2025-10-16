@@ -1,13 +1,19 @@
-DELETE FROM Person
-WHERE id NOT IN (
-    SELECT MIN(id)
-    FROM Person
-    GROUP BY email
-);
+DELETE 
+from Person 
+where id not in (
+    Select id from (
+    Select 
+      MIN(id) as id 
+    From Person 
+    Group by email ) t 
+) 
 
 
-/* Pandas method aswell */
-Person.sort_values(by='id', inplace=True)
+import pandas as pd
 
-/* Drop duplicates based on the 'email' column, keeping the first (smallest id) */ 
-Person.drop_duplicates(subset='email', keep='first', inplace=True)
+def delete_duplicate_emails(person: pd.DataFrame) -> None:
+    keep_idx = person.groupby('email', sort=False)['id'].idxmin()
+    drop_idx = person.index.difference(keep_idx)
+    person.drop(index=drop_idx, inplace=True)
+    person.reset_index(drop=True, inplace=True)
+
